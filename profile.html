@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="profile" content="width=device-width, initial-scale=1.0" />
+    <title>Profile</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background: #0f1117;
+        color: #e2e8f0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .card {
+        background: #1a1d27;
+        border: 1px solid #2d3148;
+        border-radius: 16px;
+        padding: 40px;
+        width: 100%;
+        max-width: 420px;
+      }
+
+      .logo {
+        text-align: center;
+        font-size: 2rem;
+        margin-bottom: 8px;
+      }
+
+      h1 {
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 6px;
+      }
+
+      .subtitle {
+        text-align: center;
+        color: #64748b;
+        font-size: 0.9rem;
+        margin-bottom: 32px;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-bottom: 16px;
+      }
+
+      label {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #94a3b8;
+      }
+
+      input {
+        background: #0f1117;
+        border: 1px solid #2d3148;
+        border-radius: 8px;
+        padding: 12px 14px;
+        color: #e2e8f0;
+        font-size: 0.95rem;
+        outline: none;
+        transition: border 0.2s;
+        font-family: inherit;
+        width: 100%;
+      }
+
+      input:focus {
+        border-color: #7c6aff;
+      }
+
+      .password-wrapper {
+        position: relative;
+      }
+
+      .password-wrapper input {
+        padding-right: 44px;
+      }
+
+      .toggle-pw {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #64748b;
+        cursor: pointer;
+        font-size: 1.1rem;
+        padding: 0;
+      }
+
+      .toggle-pw:hover {
+        color: #94a3b8;
+      }
+
+      .btn {
+        width: 100%;
+        padding: 12px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 600;
+        transition: all 0.2s;
+        margin-top: 8px;
+      }
+
+      .btn-primary {
+        background: #7c6aff;
+        color: white;
+      }
+      .btn-primary:hover {
+        background: #6d59f0;
+      }
+      .btn-primary:disabled {
+        background: #3d3460;
+        color: #64748b;
+        cursor: not-allowed;
+      }
+
+      .msg {
+        margin-top: 16px;
+        padding: 10px 14px;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        text-align: center;
+        display: none;
+      }
+      .msg.success {
+        background: #22c55e20;
+        color: #22c55e;
+        border: 1px solid #22c55e40;
+        display: block;
+      }
+      .msg.error {
+        background: #ef444420;
+        color: #ef4444;
+        border: 1px solid #ef444440;
+        display: block;
+      }
+
+      .login-link {
+        text-align: center;
+        margin-top: 24px;
+        font-size: 0.9rem;
+        color: #64748b;
+      }
+
+      .login-link a {
+        color: #7c6aff;
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .login-link a:hover {
+        text-decoration: underline;
+      }
+
+      .strength-bar {
+        height: 4px;
+        border-radius: 2px;
+        background: #2d3148;
+        margin-top: 6px;
+        overflow: hidden;
+      }
+
+      .strength-fill {
+        height: 100%;
+        border-radius: 2px;
+        transition: all 0.3s;
+        width: 0%;
+      }
+
+      .strength-text {
+        font-size: 0.75rem;
+        margin-top: 4px;
+        color: #64748b;
+      }
+
+      .spinner {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border: 2px solid #ffffff40;
+        border-top-color: white;
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+        margin-right: 8px;
+        vertical-align: middle;
+
+          .msg {
+        margin-top: 16px;
+        padding: 10px 14px;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        text-align: center;
+        display: none;
+      }
+      .msg.success {
+        background: #22c55e20;
+        color: #22c55e;
+        border: 1px solid #22c55e40;
+        display: block;
+      }
+      .msg.error {
+        background: #ef444420;
+        color: #ef4444;
+        border: 1px solid #ef444440;
+        display: block;
+      }
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+    <body>
+      <div class ="card">
+        <div class ="logo">📦</div>
+        <h1> Welcome to your Profile</h1>
+        <div class ="from-gruop">
+        <label> Name </label>
+        <input
+         type="name"
+         id="name"
+            disabled placeholder="Enter your name.Example Deniz"
+         onclick="Cancel()"
+            onclick="Edit()"
+         
+         />
+        </div>
+        <div class ="from-gruop">
+            <label>Surname</label>
+            <input type="surname"
+            id ="surname"
+            disabled placeholder="Enter your surname"
+            onclick="Cancel()"
+                    onclick="Edit()"
+            />
+            <div class ="from-gruop">
+                <label>Phone Number</label>
+                <input type="phone_number"
+                id="phone_number"
+                disabled placeholder="Enter the phone number"
+                onclick="Cancel()"
+                    onclick="Edit()"
+                />
+            </div>
+            <div class ="from-gruop">
+                <label >Email</label>
+                <input type="email"
+                id="email"
+                disabled placeholder ="Enter the Email"
+                onclick="Cancel()"
+                    onclick="Edit()"
+                    />
+            </div>
+            <div class ="from-group">
+                <label >Address</label>
+                <input type="address"
+                id="address"
+                placeholder="Enter your addresss"
+                  onclick="Cancel()"
+                    onclick="Edit()"
+                />
+            </div>
+            <div class="from-group">
+                <label> Password</label>
+                <input type="password"
+                id="password"
+               disabled placeholder="Enter your password"
+                onclick="Cancel()"
+                onclick="Edit()"
+                
+                />
+                <button class="toggle-pw" onclick="togglePassword('password',this)">
+                    👁️
+                </button>
+               
+           
+     <button class ="btn btn-primary" id="cancleBtn" onclick="Cancle()">❌</button>
+
+          
+        <button class="btn btn-primary" id="saveBtn" onclick="Save()"> 💾</button>
+        
+        
+
+     <button class ="btn btn-primary" id="editBtn" onclick="Edit()"</button>
+            
+    <div class ="msg" id="msg "</div>
+      </div>
+      <script>
+        const API ="http://127.0.0.1:8000";
+
+        function togglePassword(inputID,btn){
+            const input = document.getElementById(inputID);
+            if(input.type ==="password")
+        {
+            input.type ="text";
+            btn.textContent ="🙈";
+
+        }
+        else
+        {
+            input.type = "password";
+          btn.textContent = "👁️";
+        }
+        }
+
+        function getdata()
+        {
+          const account = JSON.parse(localStorage.getItem("account"))
+
+          if(!account)
+        {
+          window.location.href="login.html"
+          return;
+
+        }
+
+            document.getElementById("email").value  = account.Email  || "";
+            document.getElementById("password").value = account.password || "";
+            test(true);
+            
+        }
+
+        function test(istest)
+        {
+            const name=getElementById("name");
+            const surname=getElementById("surname");
+            const address = getElementById("address");
+            const phone = getElementById("phone_number");
+            const email = getElementById("email");
+            const password = getElementById("password");
+            const cancle = getElementById("cancleBtn");
+            const edit = getElementById("editBtn");
+            const save = getElementById("saveBtn");
+
+            if(istest)
+         {
+            name.disable =true;
+            surname.disable=true;
+            address.disable=true;
+            phone.disable=true;
+            email.disable=true;
+            password.disable=true;
+            cancle.style.disable="none";
+            edit.style.disable="block";
+            save.style.disable="none";
+
+         }
+         else
+         {
+             name.disable =false;
+            surname.disable=false;
+            address.disable=false;
+            phone.disable=false;
+            email.disable=false;
+
+            password.disable=false;
+             cancle.style.disable="block";
+            edit.style.disable="none";
+            save.style.disable="block";
+         }
+        }
+
+        function Edit()
+        {
+            test(false);
+        }
+
+        function Cancel()
+        {
+            test(true)
+        }
+
+        function clearMsg()
+        {
+          const msg =document.getElementById("msg")
+          msg.className = "msg";
+          msg.textContent="";
+        }
+
+        function showMsg(text,type)
+        {
+         const msg =document.getElementById("msg")
+         msg.textContent= text;
+         msg.className="msg", type;
+
+        }
+
+       async function Save()
+        {
+
+        }
+
+
+      </script>
+    </body>
+  </head>
+</html>

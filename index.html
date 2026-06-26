@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inventory Manager</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background: #0f1117;
+        color: #e2e8f0;
+        min-height: 100vh;
+      }
+
+      /* NAV */
+      nav {
+        background: #1a1d27;
+        border-bottom: 1px solid #2d3148;
+        padding: 0 32px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 60px;
+      }
+      .logo {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #7c6aff;
+        letter-spacing: 1px;
+      }
+      .nav-status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.85rem;
+        color: #94a3b8;
+      }
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #22c55e;
+      }
+      .dot.offline {
+        background: #ef4444;
+      }
+
+      /* MAIN */
+      main {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 32px 20px;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+      .subtitle {
+        color: #64748b;
+        margin-bottom: 32px;
+        font-size: 0.95rem;
+      }
+
+      /* STATS */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-bottom: 36px;
+      }
+      .stat-card {
+        background: #1a1d27;
+        border: 1px solid #2d3148;
+        border-radius: 12px;
+        padding: 20px;
+      }
+      .stat-label {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #64748b;
+        margin-bottom: 8px;
+      }
+      .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #7c6aff;
+      }
+      .stat-value.green {
+        color: #22c55e;
+      }
+      .stat-value.red {
+        color: #ef4444;
+      }
+
+      /* TABS */
+      .tabs {
+        display: flex;
+        gap: 4px;
+        margin-bottom: 24px;
+      }
+      .tab {
+        padding: 8px 20px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        font-size: 0.9rem;
+        background: transparent;
+        color: #64748b;
+        transition: all 0.2s;
+      }
+      .tab.active {
+        background: #7c6aff;
+        color: white;
+      }
+      .tab:hover:not(.active) {
+        background: #2d3148;
+        color: #e2e8f0;
+      }
+
+      /* SECTIONS */
+      .section {
+        display: none;
+      }
+      .section.active {
+        display: block;
+      }
+
+      /* FORM */
+      .form-card {
+        background: #1a1d27;
+        border: 1px solid #2d3148;
+        border-radius: 12px;
+        padding: 28px;
+        max-width: 600px;
+      }
+      .form-card h2 {
+        font-size: 1.1rem;
+        margin-bottom: 20px;
+        color: #c4b5fd;
+      }
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .form-group.full {
+        grid-column: 1 / -1;
+      }
+      label {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #94a3b8;
+      }
+      input,
+      select,
+      textarea {
+        background: #0f1117;
+        border: 1px solid #2d3148;
+        border-radius: 8px;
+        padding: 10px 14px;
+        color: #e2e8f0;
+        font-size: 0.95rem;
+        outline: none;
+        transition: border 0.2s;
+        font-family: inherit;
+      }
+      input:focus,
+      select:focus,
+      textarea:focus {
+        border-color: #7c6aff;
+      }
+      textarea {
+        resize: vertical;
+        min-height: 80px;
+      }
+      select option {
+        background: #1a1d27;
+      }
+
+      .btn {
+        padding: 10px 24px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        font-size: 0.95rem;
+        font-weight: 600;
+        transition: all 0.2s;
+      }
+      .btn-primary {
+        background: #7c6aff;
+        color: white;
+      }
+      .btn-primary:hover {
+        background: #6d59f0;
+      }
+      .btn-danger {
+        background: #ef444420;
+        color: #ef4444;
+        border: 1px solid #ef444440;
+      }
+      .btn-danger:hover {
+        background: #ef444430;
+      }
+      .btn-sm {
+        padding: 6px 14px;
+        font-size: 0.8rem;
+      }
+
+      .form-actions {
+        margin-top: 20px;
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+      .msg {
+        font-size: 0.85rem;
+        padding: 6px 12px;
+        border-radius: 6px;
+      }
+      .msg.success {
+        background: #22c55e20;
+        color: #22c55e;
+      }
+      .msg.error {
+        background: #ef444420;
+        color: #ef4444;
+      }
+
+      /* TABLE */
+      .table-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+      }
+      .table-header h2 {
+        font-size: 1.1rem;
+        color: #c4b5fd;
+      }
+      .search-input {
+        background: #1a1d27;
+        border: 1px solid #2d3148;
+        border-radius: 8px;
+        padding: 8px 14px;
+        color: #e2e8f0;
+        font-size: 0.9rem;
+        outline: none;
+        width: 220px;
+      }
+      .search-input:focus {
+        border-color: #7c6aff;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #1a1d27;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid #2d3148;
+      }
+      th {
+        text-align: left;
+        padding: 12px 16px;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #64748b;
+        background: #13151f;
+        border-bottom: 1px solid #2d3148;
+      }
+      td {
+        padding: 13px 16px;
+        font-size: 0.9rem;
+        border-bottom: 1px solid #2d3148;
+        vertical-align: middle;
+      }
+      tr:last-child td {
+        border-bottom: none;
+      }
+      tr:hover td {
+        background: #1e2133;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+      }
+      .badge-low {
+        background: #ef444420;
+        color: #ef4444;
+      }
+      .badge-ok {
+        background: #22c55e20;
+        color: #22c55e;
+      }
+
+      .empty {
+        text-align: center;
+        padding: 48px;
+        color: #64748b;
+      }
+      .loading {
+        text-align: center;
+        padding: 48px;
+        color: #7c6aff;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <div class="logo">📦 InventoryPro</div>
+      <div class="nav-status">
+        <div class="dot" id="statusDot"></div>
+        <span id="statusText">Connecting...</span>
+      </div>
+    </nav>
+
+    <main>
+      <h1>Inventory Dashboard</h1>
+      <p class="subtitle">Manage your products and stock levels</p>
+
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total Products</div>
+          <div class="stat-value" id="statProducts">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Items in Stock</div>
+          <div class="stat-value green" id="statItems">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Inventory Value</div>
+          <div class="stat-value" id="statValue">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Low Stock Alerts</div>
+          <div class="stat-value red" id="statLow">—</div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('dashboard')">
+          All Products
+        </button>
+        <button class="tab" onclick="switchTab('add')">Add Product</button>
+      </div>
+
+      <!-- Dashboard -->
+      <div class="section active" id="tab-dashboard">
+        <div class="table-header">
+          <h2>Product List</h2>
+          <input
+            class="search-input"
+            type="text"
+            placeholder="Search products..."
+            oninput="filterTable(this.value)"
+          />
+        </div>
+        <div id="tableContainer">
+          <div class="loading">Loading products...</div>
+        </div>
+      </div>
+
+      <!-- Add Product -->
+      <div class="section" id="tab-add">
+        <div class="form-card">
+          <h2>Add New Product</h2>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Product Name *</label>
+              <input type="text" id="fname" placeholder="e.g. Wireless Mouse" />
+            </div>
+            <div class="form-group">
+              <label>Category</label>
+              <select id="fcategory">
+                <option value="">Select category</option>
+                <option>Electronics</option>
+                <option>Furniture</option>
+                <option>Stationery</option>
+                <option>Clothing</option>
+                <option>Food & Beverage</option>
+                <option>Tools</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Quantity</label>
+              <input type="number" id="fquantity" placeholder="0" min="0" />
+            </div>
+            <div class="form-group">
+              <label>Price ($)</label>
+              <input
+                type="number"
+                id="fprice"
+                placeholder="0.00"
+                min="0"
+                step="0.01"
+              />
+            </div>
+            <div class="form-group full">
+              <label>Description</label>
+              <textarea
+                id="fdescription"
+                placeholder="Optional product description..."
+              ></textarea>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" onclick="addProduct()">
+              Add Product
+            </button>
+            <span id="formMsg"></span>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      // ⚙️ CHANGE THIS to your FastAPI URL if different
+      const API = "http://127.0.0.1:8000";
+
+      let allProducts = [];
+
+      // Check API connection
+      async function checkStatus() {
+        try {
+          const res = await fetch(`${API}/`);
+          if (res.ok) {
+            document.getElementById("statusDot").className = "dot";
+            document.getElementById("statusText").textContent = "API Connected";
+          } else throw new Error();
+        } catch {
+          document.getElementById("statusDot").className = "dot offline";
+          document.getElementById("statusText").textContent = "API Offline";
+        }
+      }
+
+      // Load stats
+      async function loadStats() {
+        try {
+          const res = await fetch(`${API}/stats`);
+          const data = await res.json();
+          document.getElementById("statProducts").textContent =
+            data.total_products;
+          document.getElementById("statItems").textContent =
+            data.total_items.toLocaleString();
+          document.getElementById("statValue").textContent =
+            "$" + data.total_value.toLocaleString();
+          document.getElementById("statLow").textContent = data.low_stock;
+        } catch {}
+      }
+
+      // Load products table
+      async function loadProducts() {
+        try {
+          const res = await fetch(`${API}/products`);
+          allProducts = await res.json();
+          renderTable(allProducts);
+        } catch {
+          document.getElementById("tableContainer").innerHTML =
+            `<div class="empty">⚠️ Could not load products. Make sure your API is running.</div>`;
+        }
+      }
+
+      function renderTable(products) {
+        if (products.length === 0) {
+          document.getElementById("tableContainer").innerHTML =
+            `<div class="empty">No products found. Add one!</div>`;
+          return;
+        }
+        const rows = products
+          .map(
+            (p) => `
+      <tr>
+        <td><strong>${p.name}</strong></td>
+        <td>${p.category || "—"}</td>
+        <td>
+          ${p.quantity}
+          <span class="badge ${p.quantity < 10 ? "badge-low" : "badge-ok"}">
+            ${p.quantity < 10 ? "Low" : "OK"}
+          </span>
+        </td>
+        <td>$${parseFloat(p.price).toFixed(2)}</td>
+        <td>${p.description || "—"}</td>
+        <td>
+          <button class="btn btn-danger btn-sm" onclick="deleteProduct(${p.id})">Delete</button>
+        </td>
+      </tr>
+    `,
+          )
+          .join("");
+
+        document.getElementById("tableContainer").innerHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th><th>Category</th><th>Quantity</th>
+            <th>Price</th><th>Description</th><th>Action</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    `;
+      }
+
+      function filterTable(query) {
+        const q = query.toLowerCase();
+        const filtered = allProducts.filter(
+          (p) =>
+            p.name.toLowerCase().includes(q) ||
+            (p.category || "").toLowerCase().includes(q),
+        );
+        renderTable(filtered);
+      }
+
+      async function addProduct() {
+        const name = document.getElementById("fname").value.trim();
+        if (!name) {
+          showMsg("Product name is required.", "error");
+          return;
+        }
+
+        const product = {
+          name,
+          category: document.getElementById("fcategory").value,
+          quantity: parseInt(document.getElementById("fquantity").value) || 0,
+          price: parseFloat(document.getElementById("fprice").value) || 0,
+          description: document.getElementById("fdescription").value.trim(),
+        };
+
+        try {
+          const res = await fetch(`${API}/products`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(product),
+          });
+          if (!res.ok) throw new Error();
+          showMsg("Product added successfully!", "success");
+          ["fname", "fquantity", "fprice", "fdescription"].forEach(
+            (id) => (document.getElementById(id).value = ""),
+          );
+          document.getElementById("fcategory").value = "";
+          loadProducts();
+          loadStats();
+        } catch {
+          showMsg("Failed to add product.", "error");
+        }
+      }
+
+      async function deleteProduct(id) {
+        if (!confirm("Delete this product?")) return;
+        try {
+          await fetch(`${API}/products/${id}`, { method: "DELETE" });
+          loadProducts();
+          loadStats();
+        } catch {
+          alert("Failed to delete product.");
+        }
+      }
+
+      function showMsg(text, type) {
+        const el = document.getElementById("formMsg");
+        el.textContent = text;
+        el.className = "msg " + type;
+        setTimeout(() => (el.textContent = ""), 3000);
+      }
+
+      function switchTab(tab) {
+        document.querySelectorAll(".tab").forEach((t, i) => {
+          t.classList.toggle("active", ["dashboard", "add"][i] === tab);
+        });
+        document
+          .querySelectorAll(".section")
+          .forEach((s) => s.classList.remove("active"));
+        document.getElementById("tab-" + tab).classList.add("active");
+      }
+
+      // Init
+      checkStatus();
+      loadStats();
+      loadProducts();
+      setInterval(checkStatus, 10000);
+    </script>
+  </body>
+</html>
