@@ -306,6 +306,12 @@
       <script>
         const API ="https://new-website-production-9751.up.railway.app";
 
+        const account  =JSON.parse(localStorage.getItem("account "));
+        if(!account)
+      {
+        window.location.href ="#";
+      }
+
         function togglePassword(inputID,btn){
             const input = document.getElementById(inputID);
             if(input.type ==="password")
@@ -402,11 +408,42 @@
          msg.className="msg", type;
 
         }
+    document.getElementById("name").value = account.name;
+    document.getElementById("surname").value = account.surname;
+    document.getElementById("address").value = account.address;
+    document.getElementById("phone_number").value = account.phone_number;
 
-       async function Save()
+    async function updateProfile() {
+
+        const res = await fetch(`${API}/account/${account.id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                name: document.getElementById("name").value,
+                surname: document.getElementById("surname").value,
+                address: document.getElementById("address").value,
+                phone_number: document.getElementById("phone_number").value,
+            })
+        })};
+
+        if(!ok)
         {
+           const data = await res.json();
+
+           localStorage.setItem("account",JSON.stringify(data.account));
+            document.getElementById("msg").textContent ="Profli Update";
+        }
+        else
+        {
+          document.getElementById("msg").textContent ="Update failed";
+        }
+
+        function logut()
+        {
+          localStorage.removeItem("account");
 
         }
+
 
 
       </script>
